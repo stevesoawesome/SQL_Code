@@ -5,7 +5,7 @@
 SELECT
 	b.facid,
 	name,
-	trim(to_char(SUM(a.slots)/2.0, '9999D99')) AS "Total Hours"
+	trim(to_char(SUM(a.slots)/2.0, '9999D99')) AS "total_hours"
 FROM cd.bookings AS a
 JOIN cd.facilities AS b
 	ON a.facid=b.facid
