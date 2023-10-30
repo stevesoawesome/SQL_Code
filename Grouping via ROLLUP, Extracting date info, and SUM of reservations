@@ -1,5 +1,6 @@
 --Grabbing the sum of slots reserved for a facility, within the year of 2012.
 --Utilized ROLLUP tool to provide data via the facility ID, slots reserved per month and total slots reserved for that facility.
+
 SELECT
 	facid,
 	EXTRACT(MONTH FROM starttime) AS month,
