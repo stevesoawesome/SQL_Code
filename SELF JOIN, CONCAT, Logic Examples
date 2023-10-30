@@ -1,0 +1,31 @@
+--Created a list of members and who they referred to the club.
+--Concatenated first and last names for readibility.
+
+SELECT
+	CONCAT(mem.firstname, ' ', mem.surname) as "member_name",
+	CONCAT(rec.firstname, ' ', rec.surname) as "referred_member"
+FROM cd.members AS mem
+JOIN cd.members AS rec
+	ON mem.memid=rec.recommendedby
+ORDER BY member_name
+
+--Alternated the list to show a list of members and who referred them instead.
+
+SELECT
+	CONCAT(rec.firstname, ' ', rec.surname) as "member_name",
+	CONCAT(mem.firstname, ' ', mem.surname) as "referred_by"
+FROM cd.members AS mem
+JOIN cd.members AS rec
+	ON mem.memid=rec.recommendedby
+ORDER BY referred_by
+
+/*
+The key factor here is visualizing the table that results from the self join.
+
+This new table takes the recommended by number from the 'recs' table and matches it to the memid from the 'mem' table.
+It then combines the two lines, so that you have a result like so:
+memid | name of member | etc | memid (the person recruited) name of member (the person recruited) | recommended by #.
+
+From that we can see that table mem's half of the data is the name of the person who did the recruiting.  Table rec's
+half of the data contains the person that was recruited.  We can then select the names appropriately for the output.
+*/
