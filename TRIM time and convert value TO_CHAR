@@ -1,6 +1,7 @@
 --Joined the facilities and bookings table, in order to get the bookings, time stamps and duration for each facility.
 --Each booking is only for 1/2 an hour.  Due to that, we have to divide the sum of hours by 2, we use 2.0 to have it done as a floating point division.
 --Used 9999 as combined hours should exceed the thousands, and D99 for two decimal points for results.
+
 SELECT
 	b.facid,
 	name,
