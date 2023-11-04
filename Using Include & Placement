@@ -1,1 +1,9 @@
--
+--Find all cities within the station table whose name starts and ends with a vowel
+--This method is cleaner than writing out every possible combination of vowels
+SELECT
+  DISTINCT city
+FROM
+  station
+WHERE
+  LEFT(city, 1) IN ('a', 'e', 'i', 'o', 'u')
+    AND RIGHT(city, 1) IN ('a', 'e', 'i', 'o', 'u');
