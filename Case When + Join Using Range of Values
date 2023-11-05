@@ -23,4 +23,3 @@ ORDER BY
     b.grade DESC,
     a.name,
     marks;
-Test
