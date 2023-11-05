@@ -1,0 +1,25 @@
+/*
+For a school performance report, the teacher wants the NAME, GRADE, and MARK of their students.
+They would like this sorted by DESCending order by grades.
+No names of students whose grade are lower than 8.
+If there is a tie for their grades, sort it alphabetically by NAME.
+use NULL for the name if their GRADE is lower than 8.
+Order those students by their marks, ascending.
+*/
+
+SELECT
+    CASE
+        WHEN b.grade >= 8 THEN a.name --defining which grades to display student names and which to show NULL
+        ELSE NULL
+    END,
+    b.grade,
+    a.marks
+FROM 
+    students a
+JOIN
+    grades b ON a.marks >= b.min_mark --grades table has a min and max range to define a grade
+        AND a.marks<= b.max_mark      --to join it with students table, we define that range
+ORDER BY
+    b.grade DESC,
+    a.name,
+    marks;
