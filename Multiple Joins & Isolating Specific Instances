@@ -1,0 +1,28 @@
+/*
+Prompt for this task:
+Julia just finished conducting a coding contest, and she needs your help assembling the leaderboard!
+Write a query to print the respective hacker_id and name of hackers who achieved full scores for more
+than one challenge. Order your output in descending order by the total number of challenges in which
+the hacker earned a full score. If more than one hacker received full scores in same number of
+challenges, then sort them by ascending hacker_id.
+*/
+
+SELECT
+    hack.hacker_id,
+    hack.name
+FROM 
+    hackers AS hack
+JOIN submissions AS subs
+    ON hack.hacker_id=subs.hacker_id
+JOIN challenges AS chal
+    ON subs.challenge_id=chal.challenge_id
+JOIN difficulty AS diff
+    ON chal.difficulty_level=diff.difficulty_level
+WHERE
+    subs.score=diff.score --diff table has score as maximum possible value, subs table has score as what the individual earned.
+GROUP BY
+    hack.hacker_id, hack.name
+HAVING
+    COUNT(hack.hacker_id)>1 --only shows entries that have more than 1 instance of a perfect score.
+ORDER BY
+    COUNT(hack.hacker_id) DESC, hack.hacker_id;
