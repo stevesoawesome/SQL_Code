@@ -5,9 +5,11 @@ SELECT
 	facid,
 	EXTRACT(MONTH FROM starttime) AS month,
 	SUM(slots) as slots
-FROM cd.bookings
+FROM
+	cd.bookings
 WHERE
 	EXTRACT(YEAR FROM starttime) = 2012
-GROUP BY ROLLUP (facid, month)
+GROUP BY
+	ROLLUP (facid, month)
 ORDER BY
 	facid, month;
