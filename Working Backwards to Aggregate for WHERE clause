@@ -1,0 +1,43 @@
+/*
+Prompt for the challenge
+Julia asked her students to create some coding challenges. Write a query to print the hacker_id, name, and the total number
+of challenges created by each student. Sort your results by the total number of challenges in descending order. If more than
+one student created the same number of challenges, then sort the result by hacker_id. If more than one student created the
+same number of challenges and the count is less than the maximum number of challenges created, then exclude those students
+from the result.
+*/
+
+-- Creating CTE to pull joined content with grouping and ordering already done.
+WITH tableuse AS (
+SELECT
+    a.hacker_id AS id,
+    name,
+    COUNT(challenge_id) AS total_challenges
+FROM
+    hackers a
+JOIN
+    challenges c
+    ON a.hacker_id=c.hacker_id
+GROUP BY a.hacker_id, name
+ORDER BY total_challenges DESC, a.hacker_id)
+
+SELECT
+    id,
+    name,
+    total_challenges
+FROM
+    tableuse
+WHERE total_challenges NOT IN (
+                               SELECT
+                                total_challenges
+                               FROM
+                                tableuse
+                               WHERE total_challenges != (
+                                                          SELECT
+                                                            MAX(total_challenges) -- Defining max for total_challenges due to WHERE clause not allowing aggregates.
+                                                          FROM
+                                                            tableuse
+                                                         )
+                               GROUP BY total_challenges
+                               HAVING COUNT(total_challenges)>1 -- Sub Query grabs all entries that are not at the max submissions and have a tie for submission count to exclude them.
+                              );
