@@ -1,0 +1,9 @@
+UPDATE dbo.Sales
+SET SalePrice = CASE
+                    WHEN s.SaleDate BETWEEN '2005-06-10' AND '2005-06-20' AND s.SalePrice != p.RecommendedPrice
+                    THEN p.RecommendedPrice
+                    ELSE s.SalePrice
+                END;
+FROM dbo.Products AS p
+JOIN dbo.Sales AS s
+	ON p.ProductID=s.ProductID;
