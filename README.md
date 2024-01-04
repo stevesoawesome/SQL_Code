@@ -12,6 +12,8 @@ Some of my favorite sites when I want to tackle SQL challenges:
 - **[PG Exercises](https://pgexercises.com):** Great site for PostgreSQL exercises.
 - **[SQL Murder Mystery](https://mystery.knightlab.com):** Solve a murder mystery... using SQL!
 - **[HackerRank](https://www.hackerrank.com):** Practice SQL and other languages, and compete with others.
+- **[AnalystBuilder](https://www.analystbuilder.com):** Site built by Alex the Analyst with great interview question prep.
+- **[StrataScratch](https://platform.stratascratch.com):** Excellent site to practice SQL interview questions.
 
 ## Skills Demonstrated:
 
