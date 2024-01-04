@@ -1,0 +1,58 @@
+/*
+The following are two answers I utilized to answer a "hard level" question on AnalystBuilder.com.  The question asks the following:
+
+Marcie's Bakery is having a contest at her store. Whichever dessert sells more each day will be on discount tomorrow. She needs to identify which dessert is selling more.
+Write a query to report the difference between the number of Cakes and Pies sold each day.
+Output should include the date sold, the difference between cakes and pies, and which one sold more (cake or pie). The difference should be a positive number.
+Return the result table ordered by Date_Sold.
+
+I really enjoyed this question because it has you think outside the box to create the necessary data to answer the question.  The dataset provided us with the following:
+
+Field	Data           Type
+date_sold	           date
+product	             text
+amount_sold	         int
+*/
+
+
+-- This was my initial answer, when I first tackled the question:
+-- Creating 2 CTE's each one containing the Cake and Pie product, so that I can calculate the separated values.
+WITH cakedb AS(
+  SELECT *
+  FROM desserts
+  WHERE product = 'Cake'
+),
+  
+piedb AS (
+  SELECT *
+  FROM desserts
+  WHERE product = 'Pie'
+)
+
+-- There was a null value for one of the Pie entries, using COALESCE(--, 0) should allow me to set its value to 0.
+SELECT
+  a.date_sold,
+  ABS(COALESCE(a.amount_sold, 0) - COALESCE(b.amount_sold, 0)) AS difference,
+  CASE
+    WHEN COALESCE(a.amount_sold, 0) > COALESCE(b.amount_sold, 0) THEN 'Cake'
+    ELSE 'Pie' END AS which_sold_more
+FROM cakedb a
+JOIN piedb b
+  ON a.date_sold = b.date_sold
+
+
+
+-- After looking at ways to optimize the answer, I arrived at the following output:
+-- The challenge I gave to myself was avoiding the use of CTEs, could I come up with another way to seperate Cake and Pie sales?
+-- To accomplish this, I utilized CASE statements within themselves:
+SELECT
+  date_sold,
+  ABS(SUM(CASE WHEN product = 'Cake' THEN amount_sold ELSE 0 END) -
+    SUM(CASE WHEN product = 'Pie' THEN amount_sold ELSE 0 END)) AS difference,
+  CASE
+    WHEN SUM(CASE WHEN product = 'Cake' THEN amount_sold ELSE 0 END) >
+      SUM(CASE WHEN product = 'Pie' THEN amount_sold ELSE 0 END) THEN 'Cake'
+    ELSE 'Pie' END AS winner
+FROM desserts
+GROUP BY date_sold
+ORDER BY date_sold
