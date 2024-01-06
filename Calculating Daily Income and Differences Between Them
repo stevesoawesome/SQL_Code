@@ -20,7 +20,7 @@ ORDER BY weekday
 
 SELECT
 	CASE
-		WHEN weekday = 1 THEN 'Monday'
+	WHEN weekday = 1 THEN 'Monday'
         WHEN weekday = 2 THEN 'Tuesday'
         WHEN weekday = 3 THEN 'Wednesday'
         WHEN weekday = 4 THEN 'Thursday'
