@@ -1,0 +1,24 @@
+/*
+Getting the total income for each day.  Comparing that to a seven day moving average.
+Outputting whether it was a Beat, Miss, or Meet to make it easier to compare and
+categorize in the future.
+*/
+
+WITH ma_avg AS(
+SELECT
+	date,
+    SUM(gross_income) AS total_income,
+    ROUND(AVG(SUM(gross_income)) OVER(ORDER BY date ROWS BETWEEN 7 PRECEDING AND 1 FOLLOWING), 2) AS seven_day_avg
+FROM sales
+GROUP BY date
+)
+SELECT
+	date,
+    total_income,
+    seven_day_avg,
+    CASE
+		WHEN total_income > seven_day_avg THEN 'Beat'
+        WHEN total_income < seven_day_avg THEN 'Missed'
+        ELSE 'Meet' END AS outcome
+FROM ma_avg
+ORDER BY date;
