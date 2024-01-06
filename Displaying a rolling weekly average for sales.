@@ -1,0 +1,39 @@
+/*
+Showing the day of the week that generates the most income.
+
+Utilizing a CTE and CASE statement to convert days of the week
+from numbers to something more familiar.
+
+Added difference between current and previous rank and percentage
+difference (from the higher rank's total income).
+
+Finally, added difference in percentage current total_income is
+compared to the highest earning day.
+*/
+
+WITH dbuse AS (
+SELECT DAYOFWEEK(date) AS weekday, SUM(total) AS total_income, RANK() OVER(ORDER BY SUM(total) DESC) AS ranking
+FROM sales
+GROUP BY weekday
+ORDER BY weekday
+)
+
+SELECT
+	CASE
+		WHEN weekday = 1 THEN 'Monday'
+        WHEN weekday = 2 THEN 'Tuesday'
+        WHEN weekday = 3 THEN 'Wednesday'
+        WHEN weekday = 4 THEN 'Thursday'
+        WHEN weekday = 5 THEN 'Friday'
+        WHEN weekday = 6 THEN 'Saturday'
+        WHEN weekday = 7 THEN 'Sunday'
+	END AS weekday_name,
+  total_income,
+  ranking,
+  total_income-LAG(total_income) OVER(ORDER BY ranking) AS difference,
+  CONCAT(ROUND(ABS(total_income-LAG(total_income) OVER(ORDER BY ranking))/LAG(total_income)
+		OVER(ORDER BY ranking) * 100, 2), '%') AS perc_diff_vs_prev_day,
+  CONCAT(ROUND(ABS(total_income-FIRST_VALUE(total_income) OVER(ORDER BY ranking))/FIRST_VALUE(total_income)
+		OVER(ORDER BY ranking) * 100, 2), '%') AS perc_diff_vs_highest_day
+FROM dbuse
+ORDER BY ranking;
