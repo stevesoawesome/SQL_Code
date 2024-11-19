@@ -1,0 +1,34 @@
+/*
+
+Request to retrieve a list of customers who have not paid their invoices, so that a specialized team can reach out to them and try to recover the payments.
+
+Key deal here is the ability to:
+-Set the time frame
+-Remove demo/tester accounts
+-Avoid invoices attached to previous ones/escalated cases
+-Do not provide the same customer info multiple times, to avoid creating a list where they are contacted repeatedly
+-Ensure that only valid invoices are considered, avoid testers or "free" orders
+-Avoid listing invoices that were cancelled, these will be closed before the invoice was due
+
+*/
+
+DECLARE @Start DATETIME;
+DECLARE @End DATETIME;
+SELECT @Start = '2022-01-01';
+SELECT @End = '2023-01-01';
+
+WITH mainsdb AS(
+SELECT Invoice, CustomerNum, InvoiceDate, DueDate, ClosedDate, Subtotal, PaidAmt, InvoiceTotal, Buyer, ROW_NUMBER() OVER(PARTITION BY CustomerNum ORDER BY InvoiceDate DESC) AS Rank
+FROM InvoiceDB
+WHERE CustomerNum NOT LIKE 'DEMO Sequence%' -- Removes CustomerNums that are testers based on companies naming policies
+	AND InvoiceDate BETWEEN @Start AND @End
+	AND AttachedInvoice = '' -- Removes instances where there was a previous invoice or history that should not be considered
+	AND Subtotal > 0 -- Only looks at invoices with a charge to weed out tester files
+)
+
+SELECT Invoice, CustomerNum, InvDate, InvoiceTotal, Buyer, DueDate
+FROM mainsdb
+WHERE PaidAmt = 0
+	AND Rank = 1 --Used to remove duplicate entries where customers have multiple invoices
+	AND ClosedDate > DueDate -- removes instances where order was cancelled and closed out before payment was due
+;
